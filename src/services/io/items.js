@@ -149,9 +149,18 @@ export class Items extends BaseIONode {
   }
 }
 
+<<<<<<< HEAD:src/services/io/items.js
 export class Tags extends BaseIONode {
   autocomplete(term) {
     if (term) {
+=======
+class Tags extends BaseIONode {
+  /**
+   * @param  {} term
+   */
+  autocomplete(term){
+    if(term){
+>>>>>>> WIP tagutils:src/services/io.js
       return fetch(`${this.root}/autocomplete/?term=${term}`, {
           credentials: 'same-origin'
         })
@@ -160,4 +169,70 @@ export class Tags extends BaseIONode {
       return []
     }
   }
+  
+  /**
+   */
+  fetchAll(){
+    return fetch(`${this.root}/tags/`, {
+      credentials: 'same-origin'
+    })
+      .then(v => v.json())
+  }
+  
+  /**
+   */
+  remove(term){
+    // ... 
+  }
+
+  /**
+   */
+  merge(term, targer){
+    // ... 
+  }
+
 }
+<<<<<<< HEAD:src/services/io/items.js
+=======
+
+/**
+ * 
+ */
+class IO {
+  constructor(){
+    this.headers = null;
+    this.root = '';
+
+    this.items = null;
+    this.tags = null;
+    this.stats = null;
+
+    this.initialized = fetch('./api/settings/', {
+      credentials: 'same-origin'
+    })
+      .then(v => v.json())
+      .then(data =>{
+        this.root = `${data.root}/api`;
+
+        this.headers = new Headers({'X-CSRFToken': data.csrftoken});
+
+        this.items = new Items(this);
+        this.tags = new Tags(this);
+        this.stats = new Stats(this);
+      })
+  }
+
+  /**
+   * 
+   * @param {*} data 
+   */
+  toJson(data){
+    return {
+      body: new Blob([JSON.stringify(data)], {type: 'application/json'}),
+      headers: this.headers
+    }
+  }
+}
+
+export default new IO();
+>>>>>>> WIP tagutils:src/services/io.js
