@@ -6,11 +6,7 @@
       <router-link tag="li" :to="{name: 'graph:tag-total'}">Total sum by tags</router-link>
       <router-link tag="li" :to="{name: 'graph:tag-time'}">Tag sum over time</router-link>
       <router-link tag="li" :to="{name: 'import-export'}">Import / export</router-link>
-<<<<<<< HEAD
       <router-link tag="li" :to="{name: 'smart-import'}">Smart bulk import (experimental)</router-link>
-=======
-      <router-link tag="li" :to="{name: 'tag-edit'}">Edit tags</router-link>
->>>>>>> WIP tagutils
     </ol>
     <div class="overlay-close" v-if="visible" @click="toggle()"></div>
   </div>
