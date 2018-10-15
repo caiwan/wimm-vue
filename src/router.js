@@ -6,6 +6,8 @@ import ImportExportHeader from '@/components/import-export/header';
 import ItemList from '@/components/item-list/component';
 import ItemListHeader from '@/components/item-list/header';
 import store from '@/store';
+import SmartImport from '@/components/smart-import/component';
+import SmartImportHeader from '@/components/smart-import/header';
 import TagSum from '@/components/tag-sum/component';
 import TagSumHeader from '@/components/tag-sum/header';
 import TagSumOverTime from '@/components/tag-sum-over-time/component';
@@ -17,11 +19,10 @@ Vue.use(Router);
 
 export default new Router({
   mode: 'hash',
-  routes: [
-    {
+  routes: [{
       name: 'index',
       path: '/',
-      redirect(){
+      redirect() {
         const now = store.state.itemList.currentDate;
 
         return {
@@ -71,6 +72,14 @@ export default new Router({
       components: {
         default: ImportExport,
         header: ImportExportHeader
+      }
+    },
+    {
+      name: 'smart-import',
+      path: '/smart-import/',
+      components: {
+        default: SmartImport,
+        header: SmartImportHeader
       }
     }
   ]

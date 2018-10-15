@@ -102,6 +102,9 @@
       ...mapActions('itemList', [
         'selectItem', 'editItem'
       ]),
+	  
+	  // -- these should be in the state manager instead
+	  
       selectSelf(id){
         if(this.isDeleting){
           this.selectItem(id)
@@ -133,6 +136,9 @@
         this.$delete(this.editors, id);
       }
     },
+	
+	// ---
+	
     filters: {
       money(value){
         value = formatter.format(value);

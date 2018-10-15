@@ -27,6 +27,10 @@
             v-if="isDeleting"
             @click="deleteSelected()">
     </button>
+	<button id="save-all" class="i i-check"
+            v-if="isEditing"
+            @click="saveAll()">
+    </button>
   </div>
 </template>
 
@@ -45,7 +49,7 @@
     },
     methods: {
       ...mapActions('itemList', [
-        'toggleEditing', 'toggleDeleting', 'deleteSelected'
+        'toggleEditing', 'saveAll', 'toggleDeleting', 'deleteSelected'
       ]),
       seekMonth(direction){
         let nextMonth = this.currentDate.clone();
