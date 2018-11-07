@@ -1,10 +1,9 @@
 import {
   Items,
-  Tags,
   Stats
-} from 'items';
+} from './items';
 
-import SmartImport from 'smartimport';
+import {SmartImport} from './smartimport';
 
 class IO {
   constructor() {
@@ -12,9 +11,8 @@ class IO {
     this.root = '';
 
     this.items = null;
-    this.tags = null;
     this.stats = null;
-    this.smartimport = null;
+    this.smartImport = null;
 
     this.initialized = fetch('./api/settings/', {
         credentials: 'same-origin'
@@ -28,7 +26,6 @@ class IO {
         });
 
         this.items = new Items(this);
-        this.tags = new Tags(this);
         this.stats = new Stats(this);
         this.smartImport = new SmartImport(this);
       })

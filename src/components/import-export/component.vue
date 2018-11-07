@@ -58,7 +58,7 @@
       return {
         progress: '',
         importProgress: '',
-        importedFile: null
+        importedFile: null,
       }
     },
     computed: {

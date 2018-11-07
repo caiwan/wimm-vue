@@ -4,11 +4,13 @@ export default {
   namespaced: true,
   state: {
     isImporting: false,
-    importResponse: {}
+    importResponse: {},
+    // type: 0,
   },
   getters: {
     importError: state => state.importResponse.error,
-    importCount: state => state.importResponse.imported
+    importCount: state => state.importResponse.items ? state.importResponse.items.length : 0,
+    importedItems: state => state.importResponse.items
   },
   mutations: {
     setProperty: (state, {
@@ -27,14 +29,14 @@ export default {
 
     async doImport({
       commit
-    }, file) {
+    }, { type, file }) {
       commit('setProperty', {
         key: 'isImporting',
         value: true
       });
 
       try {
-        const model = await io.smartimport.addFromFile(file);
+        const model = await io.smartImport.addFromFile(type, file);
 
         commit('setProperty', {
           key: 'importResponse',
@@ -46,6 +48,31 @@ export default {
           value: false
         });
       }
+    },
+
+    async doImport(){
+      commit('setProperty', {
+        key: 'isImporting',
+        value: true
+      });
+
+      try {
+        const model = await io.smartImport.fetchAll();
+
+        commit('setProperty', {
+          key: 'importResponse',
+          value: model
+        });
+      } finally {
+        commit('setProperty', {
+          key: 'isImporting',
+          value: false
+        });
+      }
+    },
+
+    async saveItem() {
+      // hello
     },
 
     hideUi({

@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import app from './app';
+import smartImport from './smartImport';
 import totalSum from './total-sum';
 import tagSumOverTime from './tag-sum-over-time';
 import tagSum from './tag-sum';
@@ -17,6 +18,7 @@ export default new Vuex.Store({
     app,
     importExport,
     itemList,
+    smartImport,
     tags,
     tagSum,
     tagSumOverTime,

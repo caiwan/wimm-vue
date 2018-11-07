@@ -1,4 +1,4 @@
-import BaseIONode from '_baseIO'
+import { BaseIONode } from './_baseIO'
 
 export class Stats extends BaseIONode {
   totalSum({

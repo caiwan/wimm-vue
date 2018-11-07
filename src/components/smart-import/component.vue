@@ -1,37 +1,50 @@
 <template>
   <div id="smart-import" class="content">
 
-    <div>
+    <header>
       <h1>Import</h1>
-      <div>
-        <p>Experimantal AI-aied buk import and tagging support</p>
-      </div>
+      <p>Experimantal AI-assisted bulk import and tagging support
+      </p>
+    </header>
+
+    <section>
+      <form @submit.prevent="doImportWrapped">
+        <div>
+          <select v-model="selectedFormat">
+            <option value="" disabled selected> -- Please select -- </option>
+            <option v-for="format in formats" :key="format.id" :value="format">{{format.name}}</option>
+          </select>
+          <input type="file" @change="setImportedFile($event.target.files[0])">
+        </div>
+        <button :disabled="!importedFile || !selectedFormat || isImporting">
+          Import
+          <span v-if="isImporting">{{ importProgress }} </span>
+        </button>
+      </form>
 
       <div>
-        <form @submit.prevent="doImportWrapped">
-          <div>
-            <select>
-              <option v-for="format in formats" :key="format.id" :value="format.id">{{format.name}}</option>
-            </select>
-            <input type="file" @change="setImportedFile($event.target.files[0])">
-          </div>
-          <button :disabled="!importedFile || isImporting">
-            Import
-            <span v-if="isImporting">{{ importProgress }} </span>
-          </button>
-          <div v-if="importError">
-            Import failed for some with this reason:
-            <pre>{{ importError }}</pre>
-          </div>
-
-          <div v-if="importCount">
-            Imported {{ importCount }} items
-          </div>
-
-        </form>
+        ... or continue edit previous data <br />
+        <button :disabled="isImporting" @click="doContinueEditWrapped">Go
+          <span v-if="isImporting">{{ importProgress }} </span>
+        </button>
       </div>
 
-    </div>
+      <div v-if="importError">
+        Import failed for some with this reason:
+        <pre>{{ importError }}</pre>
+      </div>
+
+      <div v-if="importCount">
+        Imported {{ importCount }} items
+      </div>
+    </section>
+
+    <section>
+      <ul>
+        <li v-for="item in importedItems" :key="item.id">{{item.text}}
+        </li>
+      </ul>
+    </section>
 
   </div>
 
@@ -39,94 +52,70 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
-import FileSaver from "file-saver";
 
-import Calendar from "@/components/calendar";
+const _progress = () => {
+  setTimeout(() => {
+    if (this.isImporting) {
+      const dots = (this.importProgress.length + 1) % 4;
+
+      this.importProgress = ".".repeat(dots);
+      setTimeout(progress, 400);
+    } else {
+      this.importProgress = "";
+    }
+  });
+};
 
 export default {
-  components: {
-    Calendar
-  },
   data() {
     return {
       progress: "",
       importProgress: "",
       importedFile: null,
       formats: [
-        { id: 1, name: "OTP" },
+        { id: 1, name: "OTP CSV" },
         { id: 2, name: "Regular" },
-        { id: 3, name: "Mixed" }
-      ]
+        { id: 3, name: "Mixed" },
+        { id: 4, name: "RAW" },
+      ],
+      selectedFormat: null
     };
   },
   computed: {
     ...mapState("smartImport", [
-      "isExporting",
-      "isImporting",
-      "dateFrom",
-      "dateTo",
-      "exportedData"
+      "isImporting"
     ]),
     ...mapGetters("smartImport", [
-      "exportFilename",
-      "importError",
-      "importCount"
+      "importError", "importCount", "importedItems"
     ])
   },
   methods: {
     ...mapActions("smartImport", [
-      "doExport",
       "setProperty",
-      "doImport",
-      "parseFile",
+      "doImport", "continueEdit",
       "hideUi"
     ]),
+
     onChanged(key, value) {
       this.setProperty({ key, value });
     },
+
     setImportedFile(f) {
       this.importedFile = f;
     },
-    async doExportWrapped(e) {
-      const progress = () => {
-        setTimeout(() => {
-          if (this.isExporting) {
-            const dots = (this.progress.length + 1) % 4;
 
-            this.progress = ".".repeat(dots);
-            setTimeout(progress, 400);
-          } else {
-            this.progress = "";
-          }
-        });
-      };
+   continueEditWrapped(){
+     _progress();
+     this.continueEdit();
+   },
 
-      progress();
-
-      await this.doExport();
-      const blob = new Blob(this.exportedData, {
-        type: "application/octet-stream"
-      });
-      FileSaver.saveAs(blob, this.exportFilename);
-    },
     doImportWrapped(e) {
-      const progress = () => {
-        setTimeout(() => {
-          if (this.isImporting) {
-            const dots = (this.importProgress.length + 1) % 4;
-
-            this.importProgress = ".".repeat(dots);
-            setTimeout(progress, 400);
-          } else {
-            this.importProgress = "";
-          }
-        });
-      };
-
-      progress();
-      this.doImport(this.importedFile);
+      _progress();
+      this.doImport({ type: this.selectedFormat.id, file: this.importedFile });
     }
+
   },
+
   beforeRouteLeave(to, from, next) {
     this.hideUi();
     next();

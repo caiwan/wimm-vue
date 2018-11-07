@@ -21,6 +21,7 @@
                 :class="{dropup: dropup}">
                 <li ref="choices"
                     v-for="(tag, index) of pChoices"
+                    :key="index"
                     :class="{'tag-choice-selected': index === selectedIndex}"
                     @mousedown="deferBlur = true"
                     @mouseup="add($event, tag)"
